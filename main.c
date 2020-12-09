@@ -1,99 +1,75 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void delsp (char *s)
+void delsp(char *s)
 {
-    int j=0;
-  char s2[100];
-  for (int i=0;i<100;i++)
-  {
-      if (s[i]!=' ')
-      {
-          s2[j]=s[i];
-          j++;
-      }
-      else
-      {
-          if ((s2[j-1]!=' ')&&(j>0))
-          {
-              s2[j]=' ';
-              j++;
-          }
-
-      }
-  }
-  strcpy(s,s2);
+ char newstr[100]="";
+ char *word;
+ word = strtok(s,". ");
+ while (word != NULL)
+ {
+     strcat(newstr,word);
+     strcat(newstr," ");
+     word = strtok(NULL,". ");
+ }
+strcpy(s,newstr);
 }
-void delword(char *s)
+void delw(char *s)
 {
-  int j=0,l=0,i;
-  char w[100];
-  i=strlen(s)-1;
-  while (s[i]!=' ')
-  {
-  l++;
-  i--;
-  }
-  for (int i=strlen(s)-l;i<=strlen(s)-1;i++)
-  {
-    w[j]=s[i];
-    j++;
-  }
-  w[j+1]='\0';
-  j=0;
-  for (int i=0;i<strlen(s);i++)
-  {
-      int k=i;
-      while ((w[j]==s[k])&&(k<strlen(s)))
-      {
-        j++;
-        k++;
-      }
-      if (((j==l)&&((s[k]==' ')||(k==strlen(s))))&&((s[i-1]==' ')||(i==0)))
-        for (int q=i;q<k;q++)
-          s[q]=' ';
-      j=0;
-  }
-  delsp(s);
+ char newstr[100]="";
+ char *temp;
+ char copy[100];
+ char lastword[50];
+ char *word;
+ strcpy(copy,s);
+ temp = strtok(copy,". ");
 
+ while (temp != NULL)
+ {
+     strcpy(lastword,temp);
+     temp = strtok(NULL,". ");
+ }
+ word = strtok(s,". ");
+ while (word != NULL)
+ {
+     if (strcmp(word,lastword)!=0)
+     {
+     strcat(newstr,word);
+     strcat(newstr," ");
+     }
+     word = strtok(NULL,". ");
+ }
+ strcpy(s,newstr);
 }
-void changewords(char *s)
+void changew(char *s)
 {
-    char temp[100], snew[100];
-    int j=0,f=0,l;
-    strcpy(temp,"");
-    strcpy(snew,"");
-    for (int i=0;i<strlen(s);i++)
-    {
-       if (s[i]!=' ')
+ char *t;
+ char nw[20]="";
+ char newstr[100]="";
+ t=strtok(s," ");
+ int j=0;
+ while (t!=NULL)
+ {
+     for (int i = 0;i<strlen(t);i++)
+     {
+
+       if (strchr(nw,(int)(t[i]))==NULL)
        {
-           l=j;
-           if (j==0)
-            {
-                 temp[j]=s[i];
-                 j++;
-            }
-           for (int k=0;k<l;k++)
-           {
-               if (temp[k]==s[i])
-               {
-                s[i]=' ';
-               }
-                else
-                {
-                 temp[j]=s[i];
-                 j++;
-                }
-           }
+           nw[j]=t[i];
+           j++;
        }
-       else
-       {
-         strcpy(temp,"");
-         j=0;
-       }
-    }
-delsp(s);
+     }
+     strcat(newstr,nw);
+     strcat(newstr," ");
+     for (int k=0;k<j;k++) nw[k]='\0';
+     j=0;
+     t=strtok(NULL," ");
+ }
+
+ strcpy(s,newstr);
 }
+
 int main()
 {
     char s[100],s2[100];
@@ -101,16 +77,17 @@ int main()
     printf("Enter file name/path for reading: \n");
     gets(s);
     file_out=fopen(s,"r");
-    fgets(s,100,file_out);
-    printf("Your srting: \n");
-    puts(s);
-    delsp(s);
-    delword(s);
-    changewords(s);
-    printf("New string: \n");
-    puts(s);
-    printf("Enter file name/path for saving the string: \n");
+     printf("Enter file name/path for saving: \n");
     gets(s2);
     file_in=fopen(s2,"w");
+    fgets(s,100,file_out);
+    delsp(s);
     fputs(s,file_in);
+    fputs("\n",file_in);
+    delw(s);
+    fputs(s,file_in);
+    fputs("\n",file_in);
+    changew(s);
+    fputs(s,file_in);
+    fputs("\n",file_in);
 }
